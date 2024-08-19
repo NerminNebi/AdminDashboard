@@ -1,4 +1,4 @@
-import { IUsers } from "@/pages/Users/userList/type";
+import { IUsers } from "@/redux/api/usersApi/type";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { revertAll } from "../constant";
 

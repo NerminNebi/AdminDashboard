@@ -35,7 +35,7 @@ const Login = () => {
   };
 
   return (
-    <div className="flex flex-col h-full">
+    <div className="flex min-h-screen">
       <div className="flex flex-1">
         <div className="flex flex-col justify-between lg:w-2/5 w-full bg-login bg-no-repeat p-10">
           {/* <img src={logo} className="h-10 object-contain object-left" /> */}

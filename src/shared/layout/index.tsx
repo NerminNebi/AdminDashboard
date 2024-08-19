@@ -1,26 +1,40 @@
-import React, { useState } from "react";
+import React, { ReactNode, useState } from "react";
 import {
   DoubleLeftOutlined,
   DoubleRightOutlined,
-  UploadOutlined,
-  UserOutlined,
-  VideoCameraOutlined,
+  UsergroupAddOutlined,
+  BlockOutlined,
 } from "@ant-design/icons";
 import { Button, Dropdown, Layout, Menu, Space, theme } from "antd";
 import { useAppDispatch, useAppSelector } from "@/redux/store";
 import { revertAll } from "@/redux/features/constant";
+import { Link } from "react-router-dom";
 
 const { Header, Content, Footer, Sider } = Layout;
 
-const items = [
-  UserOutlined,
-  VideoCameraOutlined,
-  UploadOutlined,
-  UserOutlined,
-].map((icon, index) => ({
+interface IMenu {
+  key: string;
+  path: string;
+  label: ReactNode;
+  icon: ReactNode;
+}
+
+const items: IMenu[] = [
+  {
+    path: "/",
+    label: <Link to="/">Users</Link>,
+    icon: <UsergroupAddOutlined className="!text-lg" />,
+  },
+  {
+    path: "/partners",
+    label: <Link to="/partners">Partners</Link>,
+    icon: <BlockOutlined className="!text-lg" />,
+  },
+].map(({ label, icon, path }, index) => ({
   key: String(index + 1),
-  icon: React.createElement(icon),
-  label: `nav ${index + 1}`,
+  icon,
+  path,
+  label,
 }));
 
 interface IProps {
@@ -36,79 +50,71 @@ const AppLayout: React.FC<IProps> = ({ children }) => {
   } = theme.useToken();
 
   return (
-    <Layout>
-      <Sider
-        width={250}
-        theme="light"
-        trigger={null}
-        collapsible
-        collapsed={collapsed}
-        breakpoint="lg"
-        collapsedWidth="64"
-        onBreakpoint={(broken) => {
-          // console.log(broken);
-        }}
-        onCollapse={(collapsed, type) => {
-          // console.log(collapsed, type);
-        }}
-      >
-        <div className="flex items-center justify-between">
-          <div className="">LOGO</div>
-          <Button
-            type="text"
-            icon={collapsed ? <DoubleRightOutlined /> : <DoubleLeftOutlined />}
-            onClick={() => setCollapsed(!collapsed)}
-            style={{
-              fontSize: "16px",
-              width: 64,
-              height: 64,
-            }}
-          />
-        </div>
-        <Menu
-          theme="light"
-          mode="inline"
-          defaultSelectedKeys={["1"]}
-          items={items}
-        />
-      </Sider>
+    <div className="flex min-h-screen">
       <Layout>
-        <Header
-          style={{
-            display: "flex",
-            alignItems: "center",
-            background: "#e6d0ed",
-            justifyContent: "end",
-          }}
+        <Sider
+          width={250}
+          theme="light"
+          trigger={null}
+          collapsible
+          collapsed={collapsed}
+          breakpoint="lg"
+          collapsedWidth="64"
         >
-          <button onClick={() => dispatch(revertAll())}>Logout</button>
-          <Dropdown
-            menu={{ items }}
-            trigger={["click"]}
-            dropdownRender={() => <div className="w-36"></div>}
-          >
-            <a onClick={(e) => e.preventDefault()}>
-              <Space>Hi, {firstName + " " + lastName}</Space>
-            </a>
-          </Dropdown>
-        </Header>
-        <Content style={{ margin: "24px 16px 0" }}>
-          <div
+          <div className="flex items-center justify-between">
+            <div className="">LOGO</div>
+            <Button
+              type="text"
+              icon={
+                collapsed ? <DoubleRightOutlined /> : <DoubleLeftOutlined />
+              }
+              onClick={() => setCollapsed(!collapsed)}
+              style={{
+                fontSize: "16px",
+                width: 64,
+                height: 64,
+              }}
+            />
+          </div>
+          <Menu mode="vertical" items={items} />
+        </Sider>
+        <Layout>
+          <Header
             style={{
-              padding: 24,
-              minHeight: 360,
-              background: colorBgContainer,
-              borderRadius: borderRadiusLG,
+              display: "flex",
+              alignItems: "center",
+              background: "#e6d0ed",
+              justifyContent: "end",
             }}
           >
-            {children}
-          </div>
-        </Content>
-        <Footer style={{ textAlign: "center", background: "#e6d0ed" }}>
-          Admin Panel ©{new Date().getFullYear()} Created by Narmin Askarzade
-        </Footer>
+            <button onClick={() => dispatch(revertAll())}>Logout</button>
+            <Dropdown
+              trigger={["click"]}
+              dropdownRender={() => <div className="w-36"></div>}
+            >
+              <a onClick={(e) => e.preventDefault()}>
+                <Space>Hi, {firstName + " " + lastName}</Space>
+              </a>
+            </Dropdown>
+          </Header>
+          <Content style={{ margin: "24px 16px 0" }}>
+            <div
+              style={{
+                padding: 24,
+                minHeight: 360,
+                background: colorBgContainer,
+                borderRadius: borderRadiusLG,
+              }}
+            >
+              {children}
+            </div>
+          </Content>
+          <Footer style={{ textAlign: "center", background: "#e6d0ed" }}>
+            Admin Panel ©{new Date().getFullYear()} Created by Narmin Askarzade
+          </Footer>
+        </Layout>
       </Layout>
-    </Layout>
+    </div>
   );
 };
 
