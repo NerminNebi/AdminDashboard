@@ -176,10 +176,6 @@ const UserTable: React.FC = () => {
           )}
           {modalType === "edit" && selectedUser && (
             <EditUserModal
-              skip={params.skip}
-              orderBy={params.orderBy}
-              take={params.take}
-              sortFiled={params.sortField}
               isOpen={!!modalType}
               onClose={closeModal}
               user={selectedUser}

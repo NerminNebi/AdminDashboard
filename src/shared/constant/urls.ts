@@ -1,5 +1,6 @@
 export const enum URLS {
-    HOME = '/',
-    AUTH= '/auth',
-    LOGIN = 'login',
+  HOME = "/",
+  AUTH = "/auth",
+  LOGIN = "login",
+  PARTNERS = "partners",
 }

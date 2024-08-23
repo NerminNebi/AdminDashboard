@@ -1,10 +1,13 @@
 import { createApi } from "@reduxjs/toolkit/query/react";
 import { APIBaseQuery } from "../axiosBase";
-import { IFilter, IStatusParams, IUsers } from "./type";
+import { IFilter, IStatusParams, IUsers, IUser } from "./type";
+
+const VALIDATOR: string[] = ["User"];
 
 export const usersApi: any = createApi({
   reducerPath: "users",
   baseQuery: APIBaseQuery,
+  tagTypes: VALIDATOR,
   endpoints: (builder) => ({
     getUsers: builder.query<IUsers, IFilter>({
       query(data) {
@@ -21,14 +24,15 @@ export const usersApi: any = createApi({
           },
         };
       },
-      async onQueryStarted(_arg, { queryFulfilled }) {
-        try {
-          const { data } = await queryFulfilled;
-          console.log(data);
-        } catch (e) {
-          console.log(e);
-        }
-      },
+      providesTags: VALIDATOR,
+      // async onQueryStarted(_arg, { queryFulfilled }) {
+      //   try {
+      //     const { data } = await queryFulfilled;
+      //     console.log(data);
+      //   } catch (e) {
+      //     console.log(e);
+      //   }
+      // },
     }),
     changeStatus: builder.mutation<void, IStatusParams>({
       query({ id, isActive }) {
@@ -38,24 +42,7 @@ export const usersApi: any = createApi({
           data: { id, isActive },
         };
       },
-      async onQueryStarted(
-        { skip, take, orderBy, sortField },
-        { dispatch, queryFulfilled }
-      ) {
-        try {
-          await queryFulfilled;
-          dispatch(
-            usersApi.endpoints.getUsers.initiate({
-              skip,
-              orderBy,
-              sortField,
-              take,
-            })
-          );
-        } catch (e) {
-          console.error("Error in changeStatus:", e);
-        }
-      },
+      invalidatesTags: VALIDATOR,
     }),
     updateUser: builder.mutation<any, any>({
       query(data) {
@@ -66,23 +53,32 @@ export const usersApi: any = createApi({
           data: { id, firstName, lastName, phone, email },
         };
       },
-      async onQueryStarted(
-        { skip, sortField, take, orderBy },
-        { dispatch, queryFulfilled }
-      ) {
-        try {
-          await queryFulfilled;
-          dispatch(
-            usersApi.endpoints.getUsers.initiate({
-              skip,
-              sortField,
-              orderBy,
-              take,
-            })
-          );
-        } catch (e) {
-          console.log(e);
-        }
+      invalidatesTags: VALIDATOR,
+      // async onQueryStarted(
+      //   { skip, sortField, take, orderBy },
+      //   { dispatch, queryFulfilled }
+      // ) {
+      //   try {
+      //     await queryFulfilled;
+      //     dispatch(
+      //       usersApi.endpoints.getUsers.initiate({
+      //         skip,
+      //         sortField,
+      //         orderBy,
+      //         take,
+      //       })
+      //     );
+      //   } catch (e) {
+      //     console.log(e);
+      //   }
+      // },
+    }),
+    getUserById: builder.query<IUser, number>({
+      query(id) {
+        return {
+          method: "GET",
+          url: `user/${id}`,
+        };
       },
     }),
   }),
@@ -92,4 +88,5 @@ export const {
   useGetUsersQuery,
   useChangeStatusMutation,
   useUpdateUserMutation,
+  useGetUserByIdQuery,
 } = usersApi;

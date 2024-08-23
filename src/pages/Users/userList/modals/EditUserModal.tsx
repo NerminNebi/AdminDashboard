@@ -13,10 +13,6 @@ interface EditUserModalProps {
   isOpen: boolean;
   onClose: () => void;
   user: IUser;
-  skip: number;
-  take: number;
-  sortFiled: string;
-  orderBy: boolean;
 }
 
 type TData = {
@@ -35,10 +31,6 @@ const schema = z.object({
 });
 
 const EditUserModal: React.FC<EditUserModalProps> = ({
-  skip,
-  take,
-  sortFiled,
-  orderBy,
   isOpen,
   onClose,
   user,
@@ -64,10 +56,6 @@ const EditUserModal: React.FC<EditUserModalProps> = ({
     const payload = {
       ...data,
       id: user.id,
-      skip,
-      take,
-      sortField: sortFiled,
-      orderBy,
     };
 
     updateUser(payload)
@@ -157,34 +145,43 @@ const EditUserModal: React.FC<EditUserModalProps> = ({
             <span className="text-red-500">{errors.phone?.message}</span>
           </RenderIf>
 
-          <button
-            disabled={isLoading}
-            type="submit"
-            className="inline-flex items-center px-4 py-2 font-semibold leading-6 text-sm shadow rounded-md text-white bg-green-500 disabled:bg-green-400"
-          >
-            Submit
-            <svg
-              className={`${
-                isLoading ? "inline-block" : "hidden"
-              } motion-reduce:hidden animate-spin ml-1 mr-3 h-5 w-5 text-white`}
-              fill="none"
-              viewBox="0 0 24 24"
+          <div className="mt-3 flex justify-between">
+            <button
+              onClick={onClose}
+              type={"button"}
+              className="px-4 py-2 font-semibold leading-6 text-sm rounded-md bg-gray-200"
             >
-              <circle
-                className="opacity-25"
-                cx="12"
-                cy="12"
-                r="10"
-                stroke="currentColor"
-                strokeWidth="4"
-              ></circle>
-              <path
-                className="opacity-75"
-                fill="currentColor"
-                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-              ></path>
-            </svg>
-          </button>
+              Close
+            </button>
+            <button
+              disabled={isLoading}
+              type="submit"
+              className="inline-flex items-center px-4 py-2 font-semibold leading-6 text-sm rounded-md text-white bg-green-500 disabled:bg-green-400"
+            >
+              Submit
+              <svg
+                className={`${
+                  isLoading ? "inline-block" : "hidden"
+                } motion-reduce:hidden animate-spin ml-1 mr-3 h-5 w-5 text-white`}
+                fill="none"
+                viewBox="0 0 24 24"
+              >
+                <circle
+                  className="opacity-25"
+                  cx="12"
+                  cy="12"
+                  r="10"
+                  stroke="currentColor"
+                  strokeWidth="4"
+                ></circle>
+                <path
+                  className="opacity-75"
+                  fill="currentColor"
+                  d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                ></path>
+              </svg>
+            </button>
+          </div>
         </form>
       </div>
     </Modal>
