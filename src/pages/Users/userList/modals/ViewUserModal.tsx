@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { Modal } from "antd";
 import { IUser } from "@/redux/api/usersApi/type";
 import { useGetUserByIdQuery } from "@/redux/api/usersApi";
@@ -14,6 +14,7 @@ const ViewUserModal: React.FC<ViewUserModalProps> = ({
   onClose,
   user,
 }) => {
+  if (!user) return null;
   const { data: userDetail, isLoading, isError } = useGetUserByIdQuery(user.id);
 
   console.log(userDetail, isError, isLoading);

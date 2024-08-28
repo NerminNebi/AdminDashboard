@@ -1,24 +1,25 @@
 import React, { useState } from "react";
-import { Table, Button, Space } from "antd";
+import { Table, Button, Space, Tooltip } from "antd";
 import {
   useChangeStatusMutation,
   useGetUsersQuery,
 } from "@/redux/api/usersApi";
 import { IStatusParams, IUser } from "@/redux/api/usersApi/type";
 import { RenderIf } from "@/shared/components";
-import { PoweroffOutlined } from "@ant-design/icons";
+import { PoweroffOutlined, PlusOutlined } from "@ant-design/icons";
 
 import ViewUserModal from "./modals/ViewUserModal";
 import EditUserModal from "./modals/EditUserModal";
 import RemoveUserModal from "./modals/RemoveUserModal";
 import { ISorted } from "./type";
 import Loading from "@/shared/components/Loading";
+import AddUserModal from "./modals/AddUserModal";
 
 const UserTable: React.FC = () => {
   const [selectedUser, setSelectedUser] = useState<IUser | null>(null);
   const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
   const [modalType, setModalType] = useState<
-    "view" | "edit" | "remove" | "password" | null
+    "view" | "edit" | "remove" | "password" | "add" | null
   >(null);
 
   const [params, setParams] = useState<ISorted>({
@@ -38,8 +39,8 @@ const UserTable: React.FC = () => {
   });
 
   const openModal = (
-    user: IUser,
-    type: "view" | "edit" | "remove" | "password"
+    user: IUser | null,
+    type: "view" | "edit" | "remove" | "password" | "add"
   ) => {
     setSelectedUser(user);
     setModalType(type);
@@ -106,10 +107,6 @@ const UserTable: React.FC = () => {
             changeUserStatus({
               id: user.id,
               isActive: !user.isActive,
-              skip: params.skip,
-              orderBy: params.orderBy,
-              sortField: params.sortField,
-              take: params.take,
             })
           }
         />
@@ -151,6 +148,16 @@ const UserTable: React.FC = () => {
       </RenderIf>
       {!isLoading && !isError && data?.data.length && (
         <div>
+          <div className="flex justify-end">
+            <Tooltip title="Add user">
+              <Button
+                onClick={() => openModal(null, "add")}
+                className="mb3 bg-slate-00 text-purple-600 hover:!bg-purple-600 hover:!text-white hover:!border-none outline-none"
+                shape="circle"
+                icon={<PlusOutlined className="font-bold" />}
+              />
+            </Tooltip>
+          </div>
           <Table
             dataSource={data?.data.map((user: IUser) => ({
               ...user,
@@ -166,6 +173,10 @@ const UserTable: React.FC = () => {
             onChange={handleTableChange}
             className="overflow-x-auto"
           />
+
+          {modalType === "add" && (
+            <AddUserModal isOpen={!!modalType} onClose={closeModal} />
+          )}
 
           {modalType === "view" && selectedUser && (
             <ViewUserModal

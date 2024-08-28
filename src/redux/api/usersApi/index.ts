@@ -1,6 +1,15 @@
 import { createApi } from "@reduxjs/toolkit/query/react";
+import { v4 as uuid } from "uuid";
+
 import { APIBaseQuery } from "../axiosBase";
-import { IFilter, IStatusParams, IUsers, IUser } from "./type";
+import {
+  IFilter,
+  IStatusParams,
+  IUsers,
+  IUser,
+  IDeleteUser,
+  IAddUser,
+} from "./type";
 
 const VALIDATOR: string[] = ["User"];
 
@@ -25,14 +34,17 @@ export const usersApi: any = createApi({
         };
       },
       providesTags: VALIDATOR,
-      // async onQueryStarted(_arg, { queryFulfilled }) {
-      //   try {
-      //     const { data } = await queryFulfilled;
-      //     console.log(data);
-      //   } catch (e) {
-      //     console.log(e);
-      //   }
-      // },
+    }),
+    addUser: builder.mutation<void, IAddUser>({
+      query(data) {
+        const { email, firstName, lastName, password, phone } = data;
+        return {
+          url: "user/register",
+          method: "POST",
+          data: { email, firstName, lastName, password, phone },
+        };
+      },
+      invalidatesTags: VALIDATOR,
     }),
     changeStatus: builder.mutation<void, IStatusParams>({
       query({ id, isActive }) {
@@ -54,24 +66,6 @@ export const usersApi: any = createApi({
         };
       },
       invalidatesTags: VALIDATOR,
-      // async onQueryStarted(
-      //   { skip, sortField, take, orderBy },
-      //   { dispatch, queryFulfilled }
-      // ) {
-      //   try {
-      //     await queryFulfilled;
-      //     dispatch(
-      //       usersApi.endpoints.getUsers.initiate({
-      //         skip,
-      //         sortField,
-      //         orderBy,
-      //         take,
-      //       })
-      //     );
-      //   } catch (e) {
-      //     console.log(e);
-      //   }
-      // },
     }),
     getUserById: builder.query<IUser, number>({
       query(id) {
@@ -81,12 +75,25 @@ export const usersApi: any = createApi({
         };
       },
     }),
+    deleteUser: builder.mutation<void, IDeleteUser>({
+      query(data) {
+        console.log(data, "delete");
+        return {
+          url: "user",
+          method: "DELETE",
+          data,
+        };
+      },
+      invalidatesTags: VALIDATOR,
+    }),
   }),
 });
 
 export const {
   useGetUsersQuery,
+  useAddUserMutation,
   useChangeStatusMutation,
   useUpdateUserMutation,
   useGetUserByIdQuery,
+  useDeleteUserMutation,
 } = usersApi;
