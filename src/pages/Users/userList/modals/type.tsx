@@ -5,3 +5,7 @@ export interface IModalProps {
   onClose: () => void;
   user?: IUser;
 }
+
+export interface IRemoveModal extends IModalProps {
+  selectedUsersId?: number[] | null;
+}

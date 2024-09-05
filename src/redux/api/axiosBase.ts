@@ -21,7 +21,7 @@ const errorNotifier = (message?: string) => {
   });
 };
 
-interface IAxiosBaseQuery {
+export interface IAxiosBaseQuery {
   baseUrl?: string;
   headers?: (
     headers: { [key: string]: string },

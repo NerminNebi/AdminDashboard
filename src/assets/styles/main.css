@@ -27,7 +27,12 @@ body {
   margin: 0;
   padding: 0;
   width: 350px !important;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 }
 .right-side-modal .ant-modal-content {
   border-radius: 0;
+  flex: 1;
+  overflow-y: "auto";
 }/*# sourceMappingURL=main.css.map */

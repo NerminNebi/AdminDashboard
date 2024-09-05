@@ -1,7 +1,9 @@
 import React from "react";
 import { IModalProps } from "./type";
-import { Modal } from "antd";
+import { Input, Modal } from "antd";
+import { EyeTwoTone, EyeInvisibleOutlined } from "@ant-design/icons";
 import * as z from "zod";
+
 import { RenderIf } from "@/shared/components";
 import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -73,8 +75,13 @@ const AddUserModal: React.FC<IModalProps> = ({ isOpen, onClose }) => {
   const [addUser, { isLoading }] = useAddUserMutation();
 
   const onSubmit = (data: any) => {
-    console.log(data);
-    addUser(data);
+    addUser(data)
+      .then(() => {
+        onClose();
+      })
+      .catch((error: any) => {
+        console.error(error);
+      });
   };
 
   return (
@@ -166,14 +173,23 @@ const AddUserModal: React.FC<IModalProps> = ({ isOpen, onClose }) => {
             name="password"
             control={control}
             render={({ field }) => (
-              <input
+              <Input.Password
                 {...field}
-                type="password"
-                className="mt-3 bg-gray-100 border-0 focus-visible:outline-none text-gray-700 text-sm rounded-md focus:ring-0 focus:border-0 focus:bg-gray-200 block w-full px-6 py-3 transition"
-                placeholder="Password"
+                className="mt-3 !border-0 bg-gray-100 text-gray-700 text-sm focus:!bg-gray-200 hover:bg-gray-200 !outline-none px-6 py-3 transition"
                 onBlur={() => validateField("password")}
-                required
+                placeholder="Password"
+                iconRender={(visible) =>
+                  visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />
+                }
               />
+              // <input
+              //   {...field}
+              //   type="password"
+              //   className="mt-3 bg-gray-100 border-0 focus-visible:outline-none text-gray-700 text-sm rounded-md focus:ring-0 focus:border-0 focus:bg-gray-200 block w-full px-6 py-3 transition"
+              //   placeholder="Password"
+              //   onBlur={() => validateField("password")}
+              //   required
+              // />
             )}
           />
           <RenderIf condition={errors.password?.message?.length}>
@@ -199,8 +215,7 @@ const AddUserModal: React.FC<IModalProps> = ({ isOpen, onClose }) => {
               {errors.confirmPassword?.message}
             </span>
           </RenderIf>
-
-          <div className="mt-3 flex justify-between">
+          <div className="mt-3 flex justify-between" key="button wrapper">
             <button
               onClick={onClose}
               type={"button"}
@@ -211,6 +226,7 @@ const AddUserModal: React.FC<IModalProps> = ({ isOpen, onClose }) => {
             <button
               disabled={isLoading}
               type="submit"
+              key="submit"
               className="inline-flex items-center px-4 py-2 font-semibold leading-6 text-sm rounded-md text-white bg-green-500 disabled:bg-green-400"
             >
               Submit

@@ -1,5 +1,4 @@
 import { createApi } from "@reduxjs/toolkit/query/react";
-import { v4 as uuid } from "uuid";
 
 import { APIBaseQuery } from "../axiosBase";
 import {
@@ -20,7 +19,6 @@ export const usersApi: any = createApi({
   endpoints: (builder) => ({
     getUsers: builder.query<IUsers, IFilter>({
       query(data) {
-        console.log(data);
         const { skip, orderBy, sortField, take } = data;
         return {
           method: "GET",
@@ -44,6 +42,7 @@ export const usersApi: any = createApi({
           data: { email, firstName, lastName, password, phone },
         };
       },
+
       invalidatesTags: VALIDATOR,
     }),
     changeStatus: builder.mutation<void, IStatusParams>({
@@ -77,7 +76,6 @@ export const usersApi: any = createApi({
     }),
     deleteUser: builder.mutation<void, IDeleteUser>({
       query(data) {
-        console.log(data, "delete");
         return {
           url: "user",
           method: "DELETE",

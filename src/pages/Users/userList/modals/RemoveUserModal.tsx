@@ -1,15 +1,21 @@
 import React from "react";
 import { Modal } from "antd";
 import { useDeleteUserMutation } from "@/redux/api/usersApi";
-import { IModalProps } from "./type";
+import { IModalProps, IRemoveModal } from "./type";
 
-const RemoveUserModal: React.FC<IModalProps> = ({ isOpen, onClose, user }) => {
-  if (!user) return null;
+const RemoveUserModal: React.FC<IRemoveModal> = ({
+  isOpen,
+  onClose,
+  user,
+  selectedUsersId,
+}) => {
+  console.log(isOpen, onClose, user, selectedUsersId);
+  const id = user ? [user.id] : selectedUsersId;
 
   const [deleteUser, { isLoading }] = useDeleteUserMutation();
 
-  const deleteByClick = (id: number) => {
-    deleteUser({ id: [id] })
+  const deleteByClick = (id: number[]) => {
+    deleteUser({ id })
       .then(() => {
         onClose();
       })
@@ -20,7 +26,8 @@ const RemoveUserModal: React.FC<IModalProps> = ({ isOpen, onClose, user }) => {
 
   return (
     <Modal title="Remove User" open={isOpen} onCancel={onClose} footer={null}>
-      Are you sure delete user?
+      Are you sure delete{" "}
+      {selectedUsersId?.length ? `${selectedUsersId.length} selected` : ""}user?
       <div className="mt-3 flex justify-end">
         <button
           onClick={onClose}
@@ -32,7 +39,7 @@ const RemoveUserModal: React.FC<IModalProps> = ({ isOpen, onClose, user }) => {
         <button
           disabled={isLoading}
           type="button"
-          onClick={() => deleteByClick(user.id)}
+          onClick={() => deleteByClick(id || [])}
           className="inline-flex items-center px-4 py-2 font-semibold leading-6 text-sm rounded-md text-white bg-red-500 disabled:bg-red-400"
         >
           Delete

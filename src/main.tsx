@@ -10,10 +10,14 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
   // <React.StrictMode>
   <BrowserRouter>
     <Provider store={store}>
-      <PersistGate persistor={persistor}>
+      <PersistGate persistor={persistor} loading>
         <App />
       </PersistGate>
     </Provider>
   </BrowserRouter>
   // </React.StrictMode>
 );
+
+// step1  getUsers
+// step2  mutation bas verdi
+// step3

@@ -6,7 +6,11 @@ import {
 } from "@/redux/api/usersApi";
 import { IStatusParams, IUser } from "@/redux/api/usersApi/type";
 import { RenderIf } from "@/shared/components";
-import { PoweroffOutlined, PlusOutlined } from "@ant-design/icons";
+import {
+  PoweroffOutlined,
+  PlusOutlined,
+  DeleteOutlined,
+} from "@ant-design/icons";
 
 import ViewUserModal from "./modals/ViewUserModal";
 import EditUserModal from "./modals/EditUserModal";
@@ -14,6 +18,13 @@ import RemoveUserModal from "./modals/RemoveUserModal";
 import { ISorted } from "./type";
 import Loading from "@/shared/components/Loading";
 import AddUserModal from "./modals/AddUserModal";
+
+// react component
+// third part library
+// custom hooks
+// type interface
+// icons
+// css
 
 const UserTable: React.FC = () => {
   const [selectedUser, setSelectedUser] = useState<IUser | null>(null);
@@ -25,7 +36,7 @@ const UserTable: React.FC = () => {
   const [params, setParams] = useState<ISorted>({
     orderBy: false,
     skip: 0,
-    sortField: "id",
+    sortField: "firstName",
     take: 10,
     currentPage: 1,
     pageSize: 10,
@@ -49,10 +60,10 @@ const UserTable: React.FC = () => {
   const closeModal = () => {
     setSelectedUser(null);
     setModalType(null);
+    setSelectedRowKeys([]);
   };
 
   const onSelectChange = (newSelectedRowKeys: React.Key[]) => {
-    console.log("selectedRowKeys changed: ", newSelectedRowKeys);
     setSelectedRowKeys(newSelectedRowKeys);
   };
 
@@ -97,7 +108,7 @@ const UserTable: React.FC = () => {
           type="default"
           className={
             user.isActive
-              ? "border text-green-500 hover:!border-green-500 hover:!text-green-500"
+              ? "border text-teal-600 hover:!border-teal-600 hover:!text-teal-600"
               : "border text-red-500 hover:!border-red-500 hover:!text-red-500"
           }
           icon={<PoweroffOutlined />}
@@ -148,13 +159,21 @@ const UserTable: React.FC = () => {
       </RenderIf>
       {!isLoading && !isError && data?.data.length && (
         <div>
-          <div className="flex justify-end">
+          <div className="flex justify-end items-center mb-3">
+            {selectedRowKeys.length ? (
+              <DeleteOutlined
+                className="mr-3 text-xl text-red-500 cursor-pointer"
+                onClick={() => openModal(null, "remove")}
+              />
+            ) : (
+              ""
+            )}
             <Tooltip title="Add user">
               <Button
                 onClick={() => openModal(null, "add")}
-                className="mb3 bg-slate-00 text-purple-600 hover:!bg-purple-600 hover:!text-white hover:!border-none outline-none"
+                className="p-3.5 bg-slate-100 text-teal-600 hover:!bg-teal-600 hover:!text-white !border-none outline-none"
                 shape="circle"
-                icon={<PlusOutlined className="font-bold" />}
+                icon={<PlusOutlined className="" />}
               />
             </Tooltip>
           </div>
@@ -192,11 +211,12 @@ const UserTable: React.FC = () => {
               user={selectedUser}
             />
           )}
-          {modalType === "remove" && selectedUser && (
+          {modalType === "remove" && (selectedUser || selectedRowKeys) && (
             <RemoveUserModal
               isOpen={!!modalType}
               onClose={closeModal}
-              user={selectedUser}
+              user={selectedUser as IUser}
+              selectedUsersId={selectedRowKeys as number[]}
             />
           )}
         </div>

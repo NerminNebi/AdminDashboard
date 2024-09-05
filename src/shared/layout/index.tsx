@@ -62,7 +62,7 @@ const AppLayout: React.FC<IProps> = ({ children }) => {
           collapsedWidth="64"
         >
           <div className="flex items-center justify-between">
-            <div className="">LOGO</div>
+            <div className="ml-3">LOGO</div>
             <Button
               type="text"
               icon={
